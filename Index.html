@@ -1,470 +1,386 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>In-ear Cue Maker</title>
-  <style>
-    :root {
-      --bg: #0f1220;
-      --panel: #171b2f;
-      --panel2: #202641;
-      --text: #f4f6ff;
-      --muted: #9fa8c7;
-      --accent: #7c5cff;
-      --accent2: #00d4ff;
-      --danger: #ff4d6d;
-      --ok: #35d07f;
-      --line: rgba(255,255,255,.12);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, #27305a 0%, var(--bg) 40%, #070913 100%);
-      color: var(--text);
-      min-height: 100vh;
-    }
-    .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
-    header { display: flex; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-    h1 { margin: 0; font-size: clamp(24px, 4vw, 42px); letter-spacing: -1px; }
-    .tag { color: var(--muted); margin-top: 6px; }
-    .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
-    .card {
-      background: rgba(23, 27, 47, .84);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 18px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-      backdrop-filter: blur(14px);
-    }
-    label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 7px; }
-    input, select, textarea {
-      width: 100%;
-      background: var(--panel2);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      color: var(--text);
-      padding: 12px;
-      outline: none;
-    }
-    input[type=file] { padding: 10px; }
-    input[type=range] { padding: 0; }
-    button {
-      appearance: none;
-      border: 0;
-      border-radius: 13px;
-      padding: 12px 14px;
-      color: white;
-      background: linear-gradient(135deg, var(--accent), #5b8cff);
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .12s ease, opacity .12s ease;
-    }
-    button:hover { transform: translateY(-1px); }
-    button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-    .btn2 { background: #2d365c; }
-    .btn3 { background: linear-gradient(135deg, var(--ok), #16a66a); }
-    .danger { background: linear-gradient(135deg, var(--danger), #ff8a5b); }
-    .row { display: flex; gap: 10px; align-items: center; }
-    .row > * { flex: 1; }
-    .small { font-size: 12px; color: var(--muted); }
-    .transport { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
-    .time { font-variant-numeric: tabular-nums; font-size: 24px; font-weight: 800; }
-    .timeline {
-      position: relative;
-      height: 190px;
-      background: linear-gradient(180deg, #10152a, #0b0e1a);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      overflow: hidden;
-      margin-top: 12px;
-      cursor: crosshair;
-    }
-    canvas { width: 100%; height: 100%; display: block; }
-    .playhead {
-      position: absolute;
-      top: 0; bottom: 0;
-      width: 2px;
-      background: var(--accent2);
-      box-shadow: 0 0 18px var(--accent2);
-      pointer-events: none;
-      left: 0;
-    }
-    .cue-marker {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: #ffd166;
-      box-shadow: 0 0 16px rgba(255,209,102,.75);
-    }
-    .cue-label {
-      position: absolute;
-      top: 8px;
-      transform: translateX(-50%);
-      background: rgba(255,209,102,.16);
-      border: 1px solid rgba(255,209,102,.5);
-      color: #ffe8a3;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-    th, td { border-bottom: 1px solid var(--line); padding: 10px 8px; text-align: left; font-size: 14px; }
-    th { color: var(--muted); font-weight: 600; }
-    .pill { display:inline-flex; align-items:center; gap: 6px; padding: 5px 9px; background: #252c4c; border-radius: 999px; color: var(--muted); font-size: 12px; }
-    .status { margin-top: 10px; color: var(--muted); min-height: 20px; }
-    .kbd { background:#0b0e1a; border:1px solid var(--line); border-radius:6px; padding:1px 6px; color:#fff; }
-    .footer { margin-top: 14px; color: var(--muted); font-size: 12px; }
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } header { align-items:flex-start; flex-direction:column; } }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#08121c">
+<title>ระเบิดพาราโบลา | Parabola Battleship Online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* ===== 1) Tokens — แก้สี/ขนาดที่นี่ที่เดียว ===== */
+:root{
+  color-scheme:dark;
+  /* neutral อมน้ำเงินหมึกทั้งชุด ไม่ใช้เทาเปล่า ขาวสนิท หรือดำสนิท */
+  --bg:#08121c; --surface:#0d1a27; --raised:#132538; --raised-hi:#1a3149; --inset:#060e17;
+  --line:#1e3850; --line-strong:#2d5070; --line-hover:#3e6b93;
+  --text:#e6eef6; --text-2:#a3b8cc; --text-3:#7f97ae;
+  /* สีที่มีความหมาย ใช้ค่าเดียวกับที่วาดบน canvas */
+  --signal:#ffcf5c; --signal-hi:#ffdc85; --on-signal:#1d1503;  /* การยิง / เส้นวิถี */
+  --hit:#ff5d5d; --hit-bg:#4a1414;                              /* โดนเรือ */
+  --ok:#5ad39a;                                                 /* เสร็จ / เชื่อมต่อแล้ว */
+
+  --font-display:"Chakra Petch","IBM Plex Sans Thai","Noto Sans Thai",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans Thai","Noto Sans Thai","Segoe UI",system-ui,sans-serif;
+  --fs-cap:.8125rem; --fs-sm:.875rem; --fs-md:1rem; --fs-lg:1.25rem;
+  --fs-xl:clamp(1.5rem,1.15rem + 1.4vw,2rem);
+  --fs-code:clamp(2.25rem,1.6rem + 2.6vw,3rem);
+
+  --s1:.25rem; --s2:.5rem; --s3:.75rem; --s4:1rem; --s5:1.5rem; --s6:2rem; --s7:3rem;
+  --r-sm:4px; --r-md:6px; --r-lg:10px;
+  --tap:2.75rem;                                   /* 44px ขนาดแตะขั้นต่ำ */
+  --ease-out:cubic-bezier(.22,1,.36,1);
+}
+
+/* ===== 2) Base ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);
+  font:400 var(--fs-md)/1.65 var(--font-body);-webkit-tap-highlight-color:transparent}
+#app{max-width:68rem;margin:0 auto;padding:clamp(1rem,3vw,2rem) clamp(.75rem,3vw,2rem) var(--s7)}
+.hide{display:none!important}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+/* ===== 3) Typography ===== */
+h1,h2,h3{margin:0;font-family:var(--font-display);line-height:1.3;text-wrap:balance}
+h1{font-size:clamp(1.25rem,1rem + 1vw,1.5rem);font-weight:700}
+h1 .en{margin-left:var(--s2);font-size:var(--fs-sm);font-weight:500;color:var(--text-3)}
+h3{margin-bottom:var(--s1);font-size:var(--fs-lg);font-weight:600}
+.big{margin-bottom:var(--s5);font-size:var(--fs-xl);font-weight:600}
+b,strong{font-weight:600}
+.sub,.hint,.legend,.caption{margin:0;font-size:var(--fs-sm);color:var(--text-2);text-wrap:pretty}
+.hint{margin-bottom:var(--s3)}
+.legend{margin-top:var(--s3)}
+.caption{margin-bottom:var(--s2);font-weight:500}
+.math,var{font-family:var(--font-display)}
+.math{white-space:nowrap;color:var(--text)}
+var{font-style:italic}
+kbd{display:inline-block;min-width:1.6em;padding:0 .4em;border-radius:var(--r-sm);
+  font:600 var(--fs-cap)/1.6 var(--font-display);text-align:center;color:var(--text);
+  background:var(--raised);box-shadow:inset 0 -2px 0 var(--line-strong),0 0 0 1px var(--line-strong)}
+ul{margin:var(--s2) 0 0;padding-left:1.25rem;font-size:var(--fs-sm);line-height:1.7;color:var(--text-2)}
+
+/* ===== 4) Layout ===== */
+.masthead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+  gap:var(--s1) var(--s5);margin-bottom:var(--s5);padding-bottom:var(--s4);border-bottom:1px solid var(--line)}
+.masthead .sub{max-width:48ch}
+.panel{padding:clamp(1rem,2.5vw,2rem);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg)}
+.row{display:grid;gap:var(--s5) var(--s6)}
+.col{min-width:0}
+.col>.msg:first-child{margin-top:0}
+@media (min-width:52rem){
+  .row{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+  .row.board-row{grid-template-columns:minmax(0,520px) minmax(19rem,1fr)}
+}
+@media (max-width:40rem){.panel{padding:0;background:none;border:0}}
+.actions{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s4)}
+.ready-row{margin-top:var(--s5);padding-top:var(--s5);border-top:1px solid var(--line)}
+.center{text-align:center}
+.center .actions{justify-content:center}
+.center .msg{max-width:42ch;margin-inline:auto}
+.center canvas{margin-inline:auto}
+
+/* ===== 5) Controls ===== */
+button{display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);
+  min-height:var(--tap);margin:0;padding:var(--s2) var(--s4);
+  font:600 var(--fs-md)/1.3 var(--font-body);color:var(--text);
+  background:var(--raised);border:1px solid var(--line-strong);border-radius:var(--r-md);
+  cursor:pointer;touch-action:manipulation;
+  transition:background-color .15s var(--ease-out),border-color .15s var(--ease-out),
+             color .15s var(--ease-out),transform .1s var(--ease-out)}
+button:hover:not(:disabled){background:var(--raised-hi);border-color:var(--line-hover)}
+button:active:not(:disabled){transform:translateY(1px)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.primary{min-width:7.5rem;background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
+button.primary:hover:not(:disabled){background:var(--signal-hi);border-color:var(--signal-hi)}
+button.ghost{background:transparent;border-color:transparent;color:var(--text-2)}
+button.ghost:hover:not(:disabled){background:transparent;border-color:transparent;color:var(--text);
+  text-decoration:underline;text-underline-offset:.25em}
+input,select{min-height:var(--tap);padding:var(--s2) var(--s3);
+  font:500 var(--fs-md)/1.2 var(--font-body);font-variant-numeric:tabular-nums;color:var(--text);
+  background:var(--inset);border:1px solid var(--line-strong);border-radius:var(--r-sm);
+  transition:border-color .15s var(--ease-out)}
+input:hover,select:hover{border-color:var(--line-hover)}
+input:focus-visible,select:focus-visible{outline-offset:1px;border-color:var(--signal)}
+select{cursor:pointer}
+label{display:block;margin-bottom:var(--s1);font-size:var(--fs-sm);color:var(--text-2)}
+
+/* ===== 6) หน้าเลือกโหมด ===== */
+.choices{display:grid;gap:var(--s3);align-content:start}
+.choice{position:relative;display:grid;justify-content:stretch;justify-items:start;gap:var(--s1);
+  width:100%;padding:var(--s4) var(--s7) var(--s4) var(--s5);text-align:left}
+.choice::after{content:"→";position:absolute;top:50%;right:var(--s5);transform:translateY(-50%);
+  font-size:var(--fs-lg);color:var(--text-3);transition:transform .2s var(--ease-out),color .2s var(--ease-out)}
+.choice:hover:not(:disabled){border-color:var(--signal)}
+.choice:hover::after{color:var(--signal);transform:translate(4px,-50%)}
+.choice-title{font:600 var(--fs-lg)/1.3 var(--font-display)}
+.choice-desc{font-size:var(--fs-sm);font-weight:400;line-height:1.6;color:var(--text-2)}
+.howto h3{margin-bottom:var(--s3)}
+.steps{display:grid;gap:var(--s3);margin:0;padding:0;list-style:none;counter-reset:step;color:var(--text-2)}
+.steps li{display:grid;grid-template-columns:2.25rem 1fr;align-items:baseline;counter-increment:step}
+.steps li::before{content:counter(step,decimal-leading-zero);font:700 var(--fs-sm)/1 var(--font-display);color:var(--signal)}
+.tip{margin:var(--s4) 0 0;padding-top:var(--s3);border-top:1px solid var(--line);font-size:var(--fs-sm);color:var(--text-2)}
+
+/* ===== 7) ล็อบบี้ ===== */
+.host-label{margin-top:var(--s5)}
+.code-show{margin:var(--s1) 0 var(--s3);font:700 var(--fs-code)/1.1 var(--font-display);
+  font-variant-numeric:tabular-nums;letter-spacing:.22em;color:var(--signal);
+  -webkit-user-select:all;user-select:all}
+.join{display:flex;flex-wrap:wrap;gap:var(--s2)}
+input.code{width:100%;max-width:12rem;padding-left:calc(var(--s3) + .3em);
+  font-family:var(--font-display);font-size:1.5rem;font-weight:600;
+  letter-spacing:.3em;text-align:center;text-transform:uppercase}
+input.code::placeholder{font-family:var(--font-body);font-size:var(--fs-md);font-weight:400;
+  letter-spacing:0;text-transform:none;color:var(--text-3)}
+
+/* ===== 8) สมการ ===== */
+.field{margin-bottom:var(--s4)}
+.eq{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2);
+  font:500 var(--fs-lg)/1.4 var(--font-display);font-variant-numeric:tabular-nums}
+.term{display:inline-flex;align-items:center;gap:var(--s2)}
+.op{white-space:nowrap}
+.eq input{width:5.25rem;text-align:center;font-family:var(--font-display);font-size:1.125rem}
+@media (max-width:24rem){.eq input{width:4.5rem}}
+
+/* ===== 9) กระดาน ===== */
+canvas{display:block;width:100%;max-width:520px;height:auto;aspect-ratio:1;
+  border-radius:var(--r-md);box-shadow:0 0 0 1px var(--line);touch-action:manipulation}
+canvas.mini{max-width:270px}
+.board-own{margin-top:var(--s6)}
+.wait-board{margin-top:var(--s5)}
+.key{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);margin:var(--s3) 0 0;padding:0;list-style:none}
+.key li{display:inline-flex;align-items:center;gap:var(--s2)}
+.key-hit,.key-miss{display:inline-grid;place-items:center;width:1.25rem;height:1.25rem;
+  border-radius:var(--r-sm);font:700 .75rem/1 var(--font-display)}
+.key-hit{color:var(--hit);background:var(--hit-bg);box-shadow:inset 0 0 0 1px var(--hit)}
+.key-miss{color:var(--text-2);background:var(--raised)}
+.key-trail{width:1.25rem;height:3px;border-radius:2px;background:var(--signal)}
+
+/* ===== 10) คลาสที่สคริปต์เดิมใช้ (ห้ามลบ) ===== */
+.msg{margin-top:var(--s4);line-height:1.7;white-space:pre-line;text-wrap:pretty}
+.msg:empty{margin-top:0}
+.ship-chip{display:inline-block;margin:0 var(--s4) var(--s2) 0;color:var(--text-2)}
+.ship-chip::before{content:"";display:inline-block;width:.625rem;height:.625rem;margin-right:var(--s2);
+  border-radius:2px;vertical-align:.05em;box-shadow:inset 0 0 0 2px var(--line-hover)}
+.ship-chip.done{color:var(--text)}
+.ship-chip.done::before{background:var(--ok);box-shadow:none}
+.badge{display:inline-block;margin-right:var(--s2);padding:0 var(--s2);border-radius:var(--r-sm);
+  font-size:var(--fs-cap);line-height:1.7;background:var(--raised);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.dot{display:inline-block;width:.5rem;height:.5rem;margin-right:var(--s2);border-radius:50%;
+  vertical-align:.1em;background:var(--hit)}
+.dot.on{background:var(--ok)}
+.spin{display:inline-block;width:1rem;height:1rem;margin-right:var(--s2);vertical-align:-.15em;
+  border:2px solid var(--line-strong);border-top-color:var(--signal);border-radius:50%;
+  animation:spin .9s linear infinite}
+
+/* ===== 11) Motion ===== */
+.panel:not(.hide){animation:enter .32s var(--ease-out)}
+@keyframes enter{from{opacity:0;transform:translateY(6px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){
+  .panel:not(.hide){animation:none}
+  .spin{animation:pulse 1.6s ease-in-out infinite}
+  button,.choice::after{transition:none}
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>In-ear Cue Maker</h1>
-        <div class="tag">ใส่เพลง → วาง cue → เสียงนับก่อนเข้าฮุก → Export WAV</div>
+<main id="app">
+  <header class="masthead">
+    <h1>ระเบิดพาราโบลา<span class="en" lang="en">Parabola Battleship</span></h1>
+    <p class="sub">กระดาน 10 × 10 ช่อง ครอบคลุม x และ y ตั้งแต่ −10 ถึง 10 · เส้นกราฟพาดผ่านช่องไหน ระเบิดช่องนั้น</p>
+  </header>
+
+  <!-- ===== เลือกโหมด ===== -->
+  <section id="sc-start" class="panel">
+    <h2 class="big">เลือกโหมดเล่น</h2>
+    <div class="row">
+      <div class="col choices">
+        <button type="button" class="choice" onclick="startLocal()">
+          <span class="choice-title">เล่นบนเครื่องเดียว</span>
+          <span class="choice-desc">ผลัดกันเล่นบนจอเดียวกัน ส่งเครื่องให้อีกฝ่ายตอนเปลี่ยนตา</span>
+        </button>
+        <button type="button" class="choice" onclick="show('sc-online')">
+          <span class="choice-title">เล่นออนไลน์กับเพื่อน</span>
+          <span class="choice-desc">ต่างคนต่างเล่นจากเครื่องตัวเอง เชื่อมกันด้วยรหัสห้อง 5 ตัว</span>
+        </button>
       </div>
-      <div class="pill">MVP v1 • ใช้ในเครื่อง ไม่อัปโหลดไฟล์</div>
-    </header>
-
-    <div class="grid">
-      <section class="card">
-        <h2 style="margin-top:0">ตั้งค่าเพลง</h2>
-        <label>1) เลือกไฟล์เพลง MP3/WAV</label>
-        <input id="file" type="file" accept="audio/*" />
-
-        <div class="row">
-          <div>
-            <label>BPM</label>
-            <input id="bpm" type="number" value="120" min="40" max="240" />
-          </div>
-          <div>
-            <label>Beats / Bar</label>
-            <input id="beats" type="number" value="4" min="2" max="12" />
-          </div>
-        </div>
-
-        <label>เสียง Cue</label>
-        <select id="voiceMode">
-          <option value="thai">เสียงพูดไทย: 4 3 2 1 ฮุก</option>
-          <option value="beep">เสียงบี๊บ + ฮุก</option>
-          <option value="mixed">เสียงพูด + บี๊บเบา</option>
-        </select>
-
-        <label>ความดัง Cue</label>
-        <input id="cueVol" type="range" min="0" max="1" step="0.01" value="0.9" />
-
-        <label>ความดัง Click</label>
-        <input id="clickVol" type="range" min="0" max="1" step="0.01" value="0.25" />
-
-        <label>รูปแบบ Export</label>
-        <select id="exportMode">
-          <option value="cueOnly">Cue + Click อย่างเดียว</option>
-          <option value="stereo">Stereo: เพลงซ้าย / Cue+Click ขวา</option>
-          <option value="mix">Mix เพลง + Cue + Click</option>
-        </select>
-
-        <div class="transport">
-          <button id="play" disabled>▶ เล่น</button>
-          <button id="pause" class="btn2" disabled>⏸ หยุด</button>
-          <button id="addHook" class="btn3" disabled>+ Cue เข้าฮุก</button>
-          <button id="addCustom" class="btn2" disabled>+ Cue เอง</button>
-          <button id="export" class="btn3" disabled>Export WAV</button>
-        </div>
-
-        <label>ข้อความ Cue เอง</label>
-        <input id="customText" value="เตรียมเข้าอีกท่อน" />
-
-        <div class="small">
-          ทิป: กด <span class="kbd">Space</span> เล่น/หยุด, กด <span class="kbd">H</span> วาง cue ฮุกที่ตำแหน่งปัจจุบัน
-        </div>
-        <div id="status" class="status">รอเลือกไฟล์เพลง...</div>
-      </section>
-
-      <section class="card">
-        <div class="row" style="justify-content:space-between; align-items:flex-start;">
-          <div>
-            <h2 style="margin:0">Timeline</h2>
-            <div class="small">คลิกที่ไทม์ไลน์เพื่อกระโดดตำแหน่งเพลง</div>
-          </div>
-          <div class="time" id="time">00:00.000</div>
-        </div>
-
-        <div id="timeline" class="timeline">
-          <canvas id="wave"></canvas>
-          <div id="playhead" class="playhead"></div>
-          <div id="markers"></div>
-        </div>
-
-        <table>
-          <thead>
-            <tr><th>เวลา</th><th>ประเภท</th><th>ข้อความ</th><th>ลบ</th></tr>
-          </thead>
-          <tbody id="cueList"></tbody>
-        </table>
-
-        <div class="footer">
-          หมายเหตุ: เสียงพูดใช้ SpeechSynthesis ของ Browser ตอนพรีวิว ส่วนตอน Export จะสร้างเป็นเสียงบี๊บ/โทนและจังหวะนับที่แม่นเวลา เพื่อให้ไฟล์ออกได้เสถียร
-        </div>
-      </section>
+      <div class="col howto">
+        <h3>วิธีเล่น</h3>
+        <ol class="steps">
+          <li>ซ่อนเรือ 2 ลำ — เรือเล็ก 2 ช่อง และเรือใหญ่ 3 ช่อง วางแนวนอนหรือแนวตั้งก็ได้</li>
+          <li><span>ผลัดกันยิงด้วยสมการ <span class="math">y = ax² + bx + c</span> หรือ <span class="math">y = a(x − h)² + k</span></span></li>
+          <li>เส้นโค้งพาดผ่านช่องไหน ระเบิดทุกช่องที่ผ่าน</li>
+          <li>จมเรือครบ 2 ลำของอีกฝ่ายได้ก่อน ชนะ</li>
+        </ol>
+        <p class="tip"><b>เคล็ดลับ:</b> a ใกล้ 0 เส้นแบน กวาดได้กว้าง · a ห่างจาก 0 มาก เส้นชัน เจาะแนวดิ่ง · a ติดลบ พาราโบลาคว่ำ</p>
+      </div>
     </div>
-  </div>
+  </section>
 
+  <!-- ===== ล็อบบี้ออนไลน์ ===== -->
+  <section id="sc-online" class="panel hide">
+    <h2 class="big">เล่นออนไลน์</h2>
+    <div class="row">
+      <div class="col">
+        <h3>สร้างห้องใหม่</h3>
+        <p class="hint">คุณจะเป็นผู้เล่น 1 และได้ยิงก่อน</p>
+        <button type="button" class="primary" onclick="hostRoom()">สร้างห้อง</button>
+        <div id="host-box" class="hide">
+          <p class="hint host-label">ส่งรหัสนี้ให้เพื่อน</p>
+          <div class="code-show" id="room-code">-----</div>
+          <button type="button" onclick="uiCopyRoomCode(this)">คัดลอกรหัส</button>
+          <div class="msg"><span class="spin" aria-hidden="true"></span>กำลังรอเพื่อนเข้าห้อง…</div>
+        </div>
+      </div>
+      <div class="col">
+        <h3>เข้าห้องเพื่อน</h3>
+        <p class="hint">ใส่รหัส 5 ตัวที่เพื่อนส่งมา — คุณจะเป็นผู้เล่น 2</p>
+        <div class="join">
+          <input class="code" id="join-code" placeholder="รหัสห้อง" maxlength="5" aria-label="รหัสห้อง 5 ตัว"
+                 autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button type="button" onclick="joinRoom()">เข้าห้อง</button>
+        </div>
+      </div>
+    </div>
+    <div class="msg" id="online-msg" aria-live="polite"></div>
+    <div class="actions"><button type="button" class="ghost" onclick="show('sc-start')">← กลับ</button></div>
+  </section>
+
+  <!-- ===== วางเรือ ===== -->
+  <section id="sc-place" class="panel hide">
+    <h2 class="big" id="place-title"></h2>
+    <div class="row board-row">
+      <div class="col">
+        <canvas id="cv-place" width="520" height="520" role="img"
+                aria-label="กระดานวางเรือ (ใช้ปุ่ม สุ่มวางให้ แทนได้)"></canvas>
+        <p class="legend">คลิกหรือแตะช่องเพื่อวางเรือ (ช่องที่เลือกคือหัวเรือ) · กด <kbd>R</kbd> เพื่อหมุนทิศ</p>
+      </div>
+      <div class="col">
+        <div id="ship-list"></div>
+        <div class="actions">
+          <button type="button" onclick="rotate()" aria-keyshortcuts="R">ทิศ: <span id="orient-label">แนวนอน →</span></button>
+          <button type="button" onclick="randomPlace()">สุ่มวางให้</button>
+          <button type="button" class="ghost" onclick="clearShips()">ล้างกระดาน</button>
+        </div>
+        <div class="actions ready-row">
+          <button type="button" class="primary" id="btn-ready" disabled onclick="readyPlace()">พร้อมรบ</button>
+        </div>
+        <div class="msg" id="place-msg" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ส่งเครื่อง (โหมดเครื่องเดียว) ===== -->
+  <section id="sc-pass" class="panel center hide">
+    <h2 class="big" id="pass-title"></h2>
+    <div class="msg" id="pass-msg"></div>
+    <div class="actions"><button type="button" class="primary" onclick="passDone()">ฉันพร้อมแล้ว</button></div>
+  </section>
+
+  <!-- ===== รอ (โหมดออนไลน์) ===== -->
+  <section id="sc-wait" class="panel center hide">
+    <h2 class="big" id="wait-title"></h2>
+    <div class="msg" id="wait-msg" aria-live="polite"><span class="spin" aria-hidden="true"></span>กำลังรอ…</div>
+    <div class="wait-board">
+      <canvas id="cv-wait" class="mini" width="520" height="520" role="img" aria-label="กระดานของคุณ"></canvas>
+    </div>
+  </section>
+
+  <!-- ===== ยิง ===== -->
+  <section id="sc-fire" class="panel hide">
+    <h2 class="big" id="fire-title"></h2>
+    <div class="row board-row">
+      <div class="col">
+        <canvas id="cv-enemy" width="520" height="520" role="img"
+                aria-label="กระดานฝ่ายตรงข้าม: จุดที่ยิงโดน จุดที่พลาด และเส้นที่เคยยิง"></canvas>
+        <ul class="key">
+          <li><span class="key-hit" aria-hidden="true">X</span>โดนเรือ</li>
+          <li><span class="key-miss" aria-hidden="true">·</span>พลาด</li>
+          <li><span class="key-trail" aria-hidden="true"></span>เส้นที่คุณเคยยิง</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="field">
+          <label for="eqmode">รูปแบบสมการ</label>
+          <select id="eqmode" onchange="switchMode()">
+            <option value="std">y = ax² + bx + c</option>
+            <option value="vtx">y = a(x − h)² + k</option>
+          </select>
+        </div>
+        <div class="eq" id="form-std">
+          <span class="op"><var>y</var> =</span>
+          <span class="term"><input id="in-a" type="number" step="0.1" value="0.2" aria-label="ค่า a"><span class="op"><var>x</var>² +</span></span>
+          <span class="term"><input id="in-b" type="number" step="0.1" value="0" aria-label="ค่า b"><span class="op"><var>x</var> +</span></span>
+          <span class="term"><input id="in-c" type="number" step="0.1" value="0" aria-label="ค่า c"></span>
+        </div>
+        <div class="eq hide" id="form-vtx">
+          <span class="op"><var>y</var> =</span>
+          <span class="term"><input id="in-a2" type="number" step="0.1" value="0.5" aria-label="ค่า a"><span class="op">(<var>x</var> −</span></span>
+          <span class="term"><input id="in-h" type="number" step="1" value="0" aria-label="ค่า h"><span class="op">)² +</span></span>
+          <span class="term"><input id="in-k" type="number" step="1" value="0" aria-label="ค่า k"></span>
+        </div>
+        <div class="actions">
+          <button type="button" class="primary" onclick="fire()">ยิง!</button>
+          <button type="button" onclick="preview()">ดูเส้นก่อนยิง</button>
+        </div>
+        <div class="msg" id="fire-msg" aria-live="polite"></div>
+        <div class="board-own">
+          <p class="caption">กระดานของคุณ</p>
+          <canvas id="cv-own" class="mini" width="520" height="520" role="img"
+                  aria-label="กระดานของคุณ: ตำแหน่งเรือและจุดที่ถูกยิง"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ผลการยิง ===== -->
+  <section id="sc-result" class="panel hide">
+    <h2 class="big" id="res-title"></h2>
+    <div class="row board-row">
+      <div class="col">
+        <canvas id="cv-res" width="520" height="520" role="img" aria-label="กระดานแสดงผลการยิงล่าสุด"></canvas>
+      </div>
+      <div class="col">
+        <div class="msg" id="res-msg" aria-live="polite"></div>
+        <div class="actions"><button type="button" class="primary" id="btn-next" onclick="afterResult()">จบตา</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== จบเกม ===== -->
+  <section id="sc-win" class="panel center hide">
+    <h2 class="big" id="win-title"></h2>
+    <div class="msg" id="win-msg"></div>
+    <div class="actions"><button type="button" class="primary" onclick="location.reload()">เล่นใหม่</button></div>
+  </section>
+</main>
+
+<!-- PeerJS ย้ายมาท้ายหน้า: หน้าแรกแสดงได้ทันทีไม่ต้องรอโหลดไลบรารี -->
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
-let audioCtx, buffer, source, startTime = 0, pauseAt = 0, isPlaying = false, raf;
-let cues = [];
-let clickNodes = [];
-let lastClickBeat = -1;
-const $ = id => document.getElementById(id);
-
-const fileEl = $('file'), playBtn = $('play'), pauseBtn = $('pause'), addHookBtn = $('addHook'), addCustomBtn = $('addCustom'), exportBtn = $('export');
-const bpmEl = $('bpm'), beatsEl = $('beats'), statusEl = $('status'), timeEl = $('time'), timeline = $('timeline'), wave = $('wave'), playhead = $('playhead'), markers = $('markers'), cueList = $('cueList');
-
-function fmt(t) {
-  const m = Math.floor(t / 60).toString().padStart(2,'0');
-  const s = Math.floor(t % 60).toString().padStart(2,'0');
-  const ms = Math.floor((t % 1) * 1000).toString().padStart(3,'0');
-  return `${m}:${s}.${ms}`;
-}
-function currentTime() { return isPlaying ? Math.min(audioCtx.currentTime - startTime, buffer.duration) : pauseAt; }
-function beatDur() { return 60 / Number(bpmEl.value || 120); }
-function barDur() { return beatDur() * Number(beatsEl.value || 4); }
-
-fileEl.addEventListener('change', async e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  statusEl.textContent = 'กำลังอ่านไฟล์เพลง...';
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const arr = await file.arrayBuffer();
-  buffer = await audioCtx.decodeAudioData(arr);
-  pauseAt = 0; cues = [];
-  drawWaveform(); renderCues(); updateButtons(true);
-  statusEl.textContent = `โหลดแล้ว: ${file.name} • ความยาว ${fmt(buffer.duration)}`;
-});
-
-function updateButtons(ok) { [playBtn,pauseBtn,addHookBtn,addCustomBtn,exportBtn].forEach(b => b.disabled = !ok); }
-
-function play() {
-  if (!buffer || isPlaying) return;
-  source = audioCtx.createBufferSource();
-  source.buffer = buffer;
-  source.connect(audioCtx.destination);
-  startTime = audioCtx.currentTime - pauseAt;
-  source.start(0, pauseAt);
-  source.onended = () => { if (currentTime() >= buffer.duration - .03) stop(false); };
-  isPlaying = true;
-  lastClickBeat = -1;
-  tick();
-}
-function stop(reset=true) {
-  if (source) { try { source.stop(); } catch(e) {} source.disconnect(); source = null; }
-  isPlaying = false;
-  if (reset) pauseAt = currentTime();
-  cancelAnimationFrame(raf);
-  tickOnce();
-}
-function seek(t) {
-  pauseAt = Math.max(0, Math.min(buffer.duration, t));
-  if (isPlaying) { stop(false); play(); }
-  tickOnce();
-}
-playBtn.onclick = play;
-pauseBtn.onclick = () => stop(true);
-
-timeline.addEventListener('click', e => {
-  if (!buffer) return;
-  const r = timeline.getBoundingClientRect();
-  seek(((e.clientX - r.left) / r.width) * buffer.duration);
-});
-
-function tick() {
-  tickOnce();
-  const t = currentTime();
-  schedulePreviewCues(t);
-  if (t >= buffer.duration) { pauseAt = 0; stop(false); return; }
-  raf = requestAnimationFrame(tick);
-}
-function tickOnce() {
-  if (!buffer) return;
-  const t = currentTime();
-  timeEl.textContent = fmt(t);
-  playhead.style.left = `${(t / buffer.duration) * 100}%`;
-}
-
-function schedulePreviewCues(t) {
-  const bd = beatDur();
-  const beatIndex = Math.floor(t / bd);
-  if (beatIndex !== lastClickBeat) {
-    lastClickBeat = beatIndex;
-    previewBeep(beatIndex % Number(beatsEl.value) === 0 ? 900 : 600, 0.035, Number($('clickVol').value));
+/* ตัวช่วย UI: คัดลอกรหัสห้อง — แยกจากโค้ดเกม ไม่แตะ state เดิม */
+function uiCopyRoomCode(btn){
+  const el = document.getElementById('room-code');
+  const code = el.textContent.trim();
+  if (!code || code.includes('-')) return;                  // ยังไม่ได้รหัสห้อง
+  const selectCode = () => window.getSelection().selectAllChildren(el);
+  const done = () => {
+    btn.textContent = 'คัดลอกแล้ว';
+    setTimeout(() => { btn.textContent = 'คัดลอกรหัส'; }, 1800);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(code).then(done, selectCode);
+  } else {
+    selectCode();                                            // คัดลอกเองไม่ได้: เลือกรหัสไว้ให้กด Ctrl+C
   }
-  cues.forEach(c => {
-    if (!c.fired && t >= c.time) {
-      c.fired = true;
-      speakCue(c.text);
-      previewBeep(1200, 0.12, Number($('cueVol').value) * .55);
-    }
-    if (t < c.time - .2) c.fired = false;
-  });
-}
-function previewBeep(freq, dur, vol) {
-  if (!audioCtx || vol <= 0) return;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.frequency.value = freq;
-  gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-  osc.connect(gain).connect(audioCtx.destination);
-  osc.start(); osc.stop(audioCtx.currentTime + dur);
-}
-function speakCue(text) {
-  const mode = $('voiceMode').value;
-  if (mode === 'beep') return;
-  if ('speechSynthesis' in window) {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'th-TH';
-    u.rate = 1.08;
-    u.volume = Number($('cueVol').value);
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
-  }
-}
-
-function addCue(time, type, text) {
-  cues.push({ time: Math.max(0, Math.min(buffer.duration, time)), type, text, fired:false });
-  cues.sort((a,b) => a.time - b.time);
-  renderCues();
-}
-addHookBtn.onclick = () => {
-  const t = currentTime();
-  const lead = barDur();
-  addCue(Math.max(0, t - lead), 'countdown', 'อีก 1 ห้อง เข้าฮุก 4 3 2 1 ฮุก');
-  addCue(t, 'hook', 'ฮุก');
-};
-addCustomBtn.onclick = () => addCue(currentTime(), 'custom', $('customText').value || 'cue');
-
-function renderCues() {
-  markers.innerHTML = ''; cueList.innerHTML = '';
-  cues.forEach((c, i) => {
-    const x = buffer ? (c.time / buffer.duration) * 100 : 0;
-    const line = document.createElement('div'); line.className = 'cue-marker'; line.style.left = `${x}%`; markers.appendChild(line);
-    const lab = document.createElement('div'); lab.className = 'cue-label'; lab.style.left = `${x}%`; lab.textContent = c.type; markers.appendChild(lab);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${fmt(c.time)}</td><td>${c.type}</td><td>${escapeHtml(c.text)}</td><td><button class="danger" style="padding:7px 10px" data-i="${i}">ลบ</button></td>`;
-    cueList.appendChild(tr);
-  });
-  cueList.querySelectorAll('button').forEach(b => b.onclick = () => { cues.splice(Number(b.dataset.i),1); renderCues(); });
-}
-function escapeHtml(s){ return s.replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
-
-function drawWaveform() {
-  const rect = timeline.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  wave.width = rect.width * dpr; wave.height = rect.height * dpr;
-  const ctx = wave.getContext('2d'); ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,rect.width,rect.height);
-  const data = buffer.getChannelData(0);
-  const step = Math.ceil(data.length / rect.width);
-  const amp = rect.height / 2;
-  ctx.strokeStyle = 'rgba(124,92,255,.95)'; ctx.lineWidth = 1;
-  ctx.beginPath();
-  for (let x=0; x<rect.width; x++) {
-    let min=1, max=-1;
-    for (let j=0; j<step; j++) {
-      const v = data[(x*step)+j] || 0;
-      if (v < min) min = v; if (v > max) max = v;
-    }
-    ctx.moveTo(x, (1+min)*amp);
-    ctx.lineTo(x, (1+max)*amp);
-  }
-  ctx.stroke();
-}
-window.addEventListener('resize', () => { if(buffer) drawWaveform(); });
-
-document.addEventListener('keydown', e => {
-  if (!buffer) return;
-  if (e.code === 'Space') { e.preventDefault(); isPlaying ? stop(true) : play(); }
-  if (e.key.toLowerCase() === 'h') addHookBtn.click();
-});
-
-exportBtn.onclick = async () => {
-  if (!buffer) return;
-  statusEl.textContent = 'กำลัง Export WAV...';
-  await new Promise(r => setTimeout(r, 50));
-  const mode = $('exportMode').value;
-  const sr = 44100;
-  const len = Math.ceil(buffer.duration * sr);
-  const out = new AudioBuffer({ length: len, sampleRate: sr, numberOfChannels: mode === 'stereo' ? 2 : 1 });
-  const outL = out.getChannelData(0);
-  const outR = mode === 'stereo' ? out.getChannelData(1) : outL;
-  const cueTrack = new Float32Array(len);
-  if (mode === 'mix') mixOriginal(outL, 0.75, sr);
-  if (mode === 'stereo') mixOriginal(outL, 0.9, sr);
-  renderClickAndCues(cueTrack, sr);
-  for (let i=0;i<len;i++) {
-    if (mode === 'stereo') outR[i] += cueTrack[i];
-    else outL[i] += cueTrack[i];
-  }
-  const wavBlob = audioBufferToWavBlob(out);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(wavBlob);
-  a.download = 'inear-cue-track.wav';
-  a.click();
-  statusEl.textContent = 'Export สำเร็จ: inear-cue-track.wav';
-};
-function mixOriginal(target, vol, sr) {
-  const src = buffer.getChannelData(0);
-  const ratio = buffer.sampleRate / sr;
-  for (let i=0;i<target.length;i++) target[i] += (src[Math.floor(i*ratio)] || 0) * vol;
-}
-function renderClickAndCues(track, sr) {
-  const bd = beatDur(), bars = Number(beatsEl.value), cv = Number($('clickVol').value), qv = Number($('cueVol').value);
-  for (let t=0; t<buffer.duration; t += bd) {
-    const beat = Math.round(t / bd);
-    addTone(track, sr, t, beat % bars === 0 ? 1000 : 650, .035, cv);
-  }
-  cues.forEach(c => {
-    if (c.type === 'countdown') {
-      const parts = [4,3,2,1];
-      parts.forEach((n, idx) => addTone(track, sr, c.time + idx*bd, 500 + n*130, .18, qv));
-      addTone(track, sr, c.time + 4*bd, 1300, .26, qv);
-    } else if (c.type === 'hook') {
-      addTone(track, sr, c.time, 1400, .35, qv);
-      addTone(track, sr, c.time + .38, 1800, .18, qv*.8);
-    } else {
-      addTone(track, sr, c.time, 1100, .22, qv);
-      addTone(track, sr, c.time + .25, 900, .22, qv*.7);
-    }
-  });
-}
-function addTone(track, sr, time, freq, dur, vol) {
-  const start = Math.floor(time * sr); const n = Math.floor(dur * sr);
-  for (let i=0;i<n && start+i<track.length;i++) {
-    const env = Math.exp(-5*i/n);
-    track[start+i] += Math.sin(2*Math.PI*freq*i/sr) * vol * env * .55;
-  }
-}
-function audioBufferToWavBlob(abuffer) {
-  const numCh = abuffer.numberOfChannels, sr = abuffer.sampleRate, len = abuffer.length;
-  const bytes = 44 + len * numCh * 2;
-  const buf = new ArrayBuffer(bytes); const view = new DataView(buf);
-  let off = 0;
-  const write = s => { for (let i=0;i<s.length;i++) view.setUint8(off++, s.charCodeAt(i)); };
-  write('RIFF'); view.setUint32(off, bytes-8, true); off+=4; write('WAVE');
-  write('fmt '); view.setUint32(off, 16, true); off+=4; view.setUint16(off, 1, true); off+=2;
-  view.setUint16(off, numCh, true); off+=2; view.setUint32(off, sr, true); off+=4;
-  view.setUint32(off, sr*numCh*2, true); off+=4; view.setUint16(off, numCh*2, true); off+=2; view.setUint16(off, 16, true); off+=2;
-  write('data'); view.setUint32(off, len*numCh*2, true); off+=4;
-  for (let i=0;i<len;i++) for (let ch=0;ch<numCh;ch++) {
-    let sample = Math.max(-1, Math.min(1, abuffer.getChannelData(ch)[i]));
-    view.setInt16(off, sample < 0 ? sample*0x8000 : sample*0x7fff, true); off+=2;
-  }
-  return new Blob([buf], {type:'audio/wav'});
 }
 </script>
+
+<!-- ▼▼ วาง <script> ของเกมเดิมทั้งก้อนตรงนี้ (ต้องอยู่หลัง PeerJS) ▼▼ -->
+
 </body>
 </html>
